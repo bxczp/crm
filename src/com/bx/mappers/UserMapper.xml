@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 一个 mapper.xml 对应一个Dao接口 -->
+<mapper namespace="com.bx.dao.UserDao">
+
+	<resultMap type="User" id="UserResult">
+		<result property="id" column="id" />
+		<result property="userName" column="userName" />
+		<result property="password" column="password" />
+		<result property="trueName" column="trueName" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="roleName" column="roleName" />
+	</resultMap>
+
+	<!-- 说明： id对应方法名 parameterType对应传入的参数名 resultMap 对应返回值类型 -->
+	<!-- 由于在 mybatis-config.xml 中 配置了别名 ，所以parameterType可以省略包名 -->
+	<select id="login" parameterType="User" resultMap="UserResult">
+		<!-- 注意 sql语句后面没有分号 -->
+		select * from t_user where userName=#{userName} and
+		password=#{password} and roleName=#{roleName}
+	</select>
+
+	<insert id="add" parameterType="User">
+		insert into t_user
+		values(null,#{userName},#{password},#{trueName},#{email},#{phone},#{roleName})
+	</insert>
+	
+	
+	<update id="updateModifyPassword" parameterType="Map">
+		update t_user set password =#{newPassword} where id=#{id} 
+	</update>
+	
+
+	<update id="update" parameterType="User">
+		update t_user
+		<!-- <set></set>会自动把最后一个语句的 逗号 删除 -->
+		<set>
+			<if test="userName!=null and userName!=''">
+				userName=#{userName},
+			</if>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+			<if test="trueName!=null and trueName!=''">
+				trueName=#{trueName},
+			</if>
+			<if test="email!=null and email!=''">
+				email=#{email},
+			</if>
+			<if test="phone!=null and phone!=''">
+				phone=#{phone},
+			</if>
+			<if test="roleName!=null and roleName!=''">
+				roleName=#{roleName},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="Integer">
+		delete from t_user where
+		id=#{id}
+	</delete>
+
+	<select id="find" parameterType="Map" resultMap="UserResult">
+		select * from t_user
+		<!-- <where> 会自动替换第一个 and -->
+		<where>
+			<!-- test 中的都是属性名 -->
+			<if test="userName!=null and userName!=''">
+				<!-- %...%已经放在了#{userName} 不要加单引号 -->
+				and userName like #{userName}
+			</if>
+			<if test="roleName!=null and roleName!=''">
+				and roleName like #{roleName}
+			</if>
+		</where>
+		<!-- 说明：userName start size等 都是 map中的key -->
+		<if test="start!=null and size!=null ">
+			limit #{start} ,#{size}
+		</if>
+	</select>
+
+	<select id="getTotal" parameterType="Map" resultType="Long">
+		select count(*) from t_user
+		<where>
+			<if test="userName!=null and userName!=''">
+				and userName like #{userName}
+			</if>
+			<if test="roleName!=null and roleName!=''">
+				and roleName like #{roleName}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+</mapper> 

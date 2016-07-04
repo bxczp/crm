@@ -1,0 +1,29 @@
+package com.bx.entity;
+
+/**
+ * @date 2016年3月31日 CustomerGc.java
+ * @author CZP
+ * @parameter
+ */
+public class CustomerGc {
+
+	private String customerLevel;
+	private int customerNum;
+
+	public String getCustomerLevel() {
+		return customerLevel;
+	}
+
+	public void setCustomerLevel(String customerLevel) {
+		this.customerLevel = customerLevel;
+	}
+
+	public int getCustomerNum() {
+		return customerNum;
+	}
+
+	public void setCustomerNum(int customerNum) {
+		this.customerNum = customerNum;
+	}
+
+}

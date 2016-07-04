@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bx.dao.LinkManDao">
+
+	<resultMap type="LinkMan" id="LinkManResult">
+		<result column="id" property="id" />
+		<result column="linkName" property="linkName" />
+		<result column="sex" property="sex" />
+		<result column="zhiwei" property="zhiwei" />
+		<result column="officePhone" property="officePhone" />
+		<result column="phone" property="phone" />
+		<association property="customer" select="com.bx.dao.CustomerDao.findById"
+			column="cusId">
+		</association>
+	</resultMap>
+
+
+	<select id="find" parameterType="Map" resultMap="LinkManResult">
+		select * from t_customer_linkman
+		<where>
+			<if test="cusId!=null ">
+				and cusId=#{cusId}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<select id="getListCount" resultType="long" parameterType="Map">
+		select count(*) from t_customer_linkman
+		<where>
+			<if test="cusId!=null ">
+				and cusId=#{cusId}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="add" parameterType="LinkMan">
+		insert into t_customer_linkman values(null,#{customer.id},#{linkName},#{sex},#{zhiwei},#{officePhone},#{phone})
+	</insert>
+	
+	<update id="update" parameterType="LinkMan" >
+		update t_customer_linkman
+		<set>
+			<if test="linkName!=null and linkName!=''">
+				linkName=#{linkName}
+			</if>
+			<if test="sex!='' and sex!=null">
+				sex=#{sex}
+			</if>
+			<if test="zhiwei!=null and zhiwei!=''">
+				zhiwei =#{zhiwei}
+			</if>
+			<if test="officePhone!=null and officePhone!=''">
+				officePhone=#{officePhone}
+			</if>
+			<if test="phone!=null and phone!=''">
+				phone=#{phone}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from t_customer_linkman where id=#{id}
+	</delete>
+
+
+
+
+</mapper>
